@@ -19,9 +19,7 @@
   "build": {
     "appId": "com.cinetracker.app",
     "productName": "CineTracker",
-    "asarUnpack": [
-    "**/node_modules/better-sqlite3/**/*"
-  ],
+    "asar": false,
     "directories": {
       "output": "dist",
       "buildResources": "assets"
