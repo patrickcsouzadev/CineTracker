@@ -2,6 +2,7 @@
   "name": "cine-tracker",
   "version": "1.0.0",
   "description": "Software desktop para gerenciar os seus filmes e séries assistidos",
+  "homepage": "https://github.com/patrickcsouzadev/CineTracker",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
