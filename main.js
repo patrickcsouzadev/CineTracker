@@ -28,8 +28,15 @@ function createWindow() {
 
 app.whenReady().then(async () => {
   app.commandLine.appendSwitch('disable-gpu-sandbox');
-  db = new AppDatabase();
-  await db.init();
+
+  try {
+    db = new AppDatabase();
+    db.init();
+  } catch (error) {
+    console.error('Falha CRÍTICA ao inicializar o banco de dados:', error);
+    app.quit();
+    return;
+  }
 
   createWindow();
 
