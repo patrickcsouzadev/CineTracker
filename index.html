@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineTracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1>🎬 CineTracker</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="showAddForm('movie')">+ Adicionar Filme</button>
+                <button class="btn btn-primary" onclick="showAddForm('series')">+ Adicionar Série</button>
+            </div>
+        </header>
+
+        <div class="filters-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar por título..." oninput="filterItems()">
+            </div>
+            <div class="filters">
+                <div class="view-toggle">
+    <button id="btn-grid" class="btn-view active" onclick="setView('grid')" title="Visualização em Grade">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3"width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+    </button>
+    <button id="btn-list" class="btn-view" onclick="setView('list')" title="Visualização em Lista">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+    </button>
+            </div>
+                <select id="typeFilter" onchange="filterItems()">
+                    <option value="all">Todos</option>
+                    <option value="movies">Filmes</option>
+                    <option value="series">Séries</option>
+                </select>
+                <select id="ratingFilter" onchange="filterItems()">
+                    <option value="all">Todas as notas</option>
+                    <option value="0-3">0-3</option>
+                    <option value="4-6">4-6</option>
+                    <option value="7-8">7-8</option>
+                    <option value="9-10">9-10</option>
+                </select>
+                <select id="sortBy" onchange="filterItems()">
+                    <option value="date">Data de adição</option>
+                    <option value="title">Título</option>
+                    <option value="rating">Nota pessoal</option>
+                </select>
+            </div>
+        </div>
+
+        <main class="main-content">
+            <div id="itemsList" class="items-grid"></div>
+        </main>
+
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 id="modalTitle">Adicionar Item</h2>
+                <form id="itemForm">
+                    <input type="hidden" id="itemId">
+                    <input type="hidden" id="itemType">
+                    
+                    <div class="form-group">
+                        <label for="title">Título:</label>
+                        <div class="title-input-group">
+                            <input type="text" id="title" required>
+                            <button type="button" class="btn btn-secondary" onclick="searchIMDb()">Buscar IMDb</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="synopsis">Sinopse:</label>
+                        <textarea id="synopsis" rows="4"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userRating">Sua Nota (0-10):</label>
+                        <input type="number" id="userRating" min="0" max="10" step="0.1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nota IMDb:</label>
+                        <span id="imdbRating" class="imdb-rating">--</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="poster">Pôster:</label>
+                        <div class="poster-upload">
+                            <button type="button" class="btn btn-secondary" onclick="selectPoster()">Selecionar Imagem</button>
+                            <div id="posterPreview"></div>
+                        </div>
+                    </div>
+
+                    <div id="seasonsSection" class="seasons-section" style="display: none;">
+                        <h3>Temporadas</h3>
+                        <div id="seasonsList"></div>
+                        <button type="button" class="btn btn-secondary" onclick="addSeason()">+ Nova Temporada</button>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="searchResultsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeSearchResultsModal()">&times;</span>
+        <h2>Resultados da Busca</h2>
+        <div id="searchResultsList" class="search-results-container">
+            </div>
+    </div>
+</div>
+
+<script src="renderer.js"></script>
+</body>
+</html>

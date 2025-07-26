@@ -1,0 +1,153 @@
+{
+  "name": "cine-tracker",
+  "version": "1.0.0",
+  "description": "Software desktop para gerenciar os seus filmes e séries assistidos",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "node build.js",
+    "build-win": "electron-builder --win",
+    "build-mac": "electron-builder --mac",
+    "build-linux": "electron-builder --linux",
+    "build-manual": "electron-builder",
+    "setup-icons": "node generate-icons.js",
+    "clean": "rimraf dist",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "com.cinetracker.app",
+    "productName": "CineTracker",
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "files": [
+  "**/*",
+  "!dist/**/*",
+  "!node_modules/**/*",
+  "node_modules/axios/**/*",
+  "node_modules/better-sqlite3/**/*",
+  "!*.md",
+  "!build.js",
+  "!generate-icons.js"
+],
+    "extraMetadata": {
+      "name": "cine-tracker",
+      "productName": "CineTracker"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "publisherName": "Movie Tracker Team",
+      "requestedExecutionLevel": "asInvoker",
+      "artifactName": "${productName}-${version}-${arch}-setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Movie & Series Tracker",
+      "uninstallDisplayName": "Movie & Series Tracker",
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "include": "assets/installer.nsh"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.entertainment",
+      "bundleVersion": "1",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "${productName} ${version}",
+      "icon": "assets/icon.icns",
+      "iconSize": 80,
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "contents": [
+        {
+          "x": 130,
+          "y": 220,
+          "type": "file"
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.png",
+      "category": "AudioVideo;Video;Entertainment",
+      "synopsis": "Track your watched movies and TV series",
+      "description": "A cross-platform desktop application to track and organize your watched movies and TV series with IMDb integration.",
+      "maintainer": "movietracker@example.com",
+      "vendor": "Movie Tracker Team",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "appImage": {
+      "license": "LICENSE"
+    },
+    "deb": {
+      "priority": "optional",
+      "depends": [
+        "libgtk-3-0",
+        "libnotify4",
+        "libnss3",
+        "libxss1",
+        "libxtst6",
+        "xdg-utils",
+        "libatspi2.0-0",
+        "libdrm2",
+        "libxcomposite1",
+        "libxdamage1",
+        "libxrandr2",
+        "libgbm1",
+        "libxkbcommon0",
+        "libasound2"
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "^25.0.0",
+    "electron-builder": "^24.0.0",
+    "rimraf": "^5.0.0"
+  },
+  "dependencies": {
+  "axios": "^1.4.0",
+  "better-sqlite3": "^9.4.5",
+  "path": "^0.12.7"
+},
+  "author": "Movie Tracker Team",
+  "license": "MIT"
+}

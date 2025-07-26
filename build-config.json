@@ -1,0 +1,65 @@
+{
+  "productName": "Movie & Series Tracker",
+  "appId": "com.movietracker.app",
+  "directories": {
+    "output": "dist",
+    "buildResources": "assets"
+  },
+  "files": [
+    "**/*",
+    "!dist/**/*",
+    "!node_modules/**/*",
+    "node_modules/sqlite3/**/*",
+    "node_modules/axios/**/*"
+  ],
+  "win": {
+    "target": "nsis",
+    "icon": "assets/icon.ico",
+    "publisherName": "Movie Tracker Team",
+    "requestedExecutionLevel": "asInvoker"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Movie & Series Tracker",
+    "uninstallDisplayName": "Movie & Series Tracker",
+    "license": "LICENSE.txt",
+    "installerIcon": "assets/icon.ico",
+    "uninstallerIcon": "assets/icon.ico",
+    "installerHeaderIcon": "assets/icon.ico"
+  },
+  "mac": {
+    "target": "dmg",
+    "icon": "assets/icon.icns",
+    "category": "public.app-category.entertainment",
+    "bundleVersion": "1.0.0"
+  },
+  "dmg": {
+    "title": "Movie & Series Tracker",
+    "icon": "assets/icon.icns",
+    "background": "assets/dmg-background.png",
+    "contents": [
+      {
+        "x": 130,
+        "y": 220,
+        "type": "file"
+      },
+      {
+        "x": 410,
+        "y": 220,
+        "type": "link",
+        "path": "/Applications"
+      }
+    ]
+  },
+  "linux": {
+    "target": "AppImage",
+    "icon": "assets/icon.png",
+    "category": "AudioVideo;Video;Entertainment",
+    "synopsis": "Track your watched movies and TV series",
+    "maintainer": "movietracker@example.com"
+  }
+}
