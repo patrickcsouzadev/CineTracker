@@ -1,4 +1,4 @@
-# 🎬 GUIA COMPLETO: Movie & Series Tracker
+# 🎬 GUIA COMPLETO: CineTracker
 
 ## 🚀 INSTALAÇÃO E BUILD AUTOMATIZADO
 
