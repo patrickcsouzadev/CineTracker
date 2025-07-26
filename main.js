@@ -27,6 +27,7 @@ function createWindow() {
 }
 
 app.whenReady().then(async () => {
+  app.commandLine.appendSwitch('disable-gpu-sandbox');
   db = new AppDatabase();
   await db.init();
 
