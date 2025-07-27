@@ -1,4 +1,4 @@
-# 🎬 GUIA COMPLETO: Movie & Series Tracker
+# 🎬 GUIA COMPLETO: CineTracker
 
 ## 🚀 INSTALAÇÃO E BUILD AUTOMATIZADO
 
@@ -429,7 +429,7 @@ Configure em `styles.css`:
 ### **Canais de Suporte:**
 - 🐛 **Bugs**: Abra issue no GitHub
 - 💡 **Sugestões**: Discussions no repositório  
-- 📧 **Contato**: movietracker@exemplo.com
+- 📧 **Contato**: patrickcsouza.dev@outlook.com
 - 💬 **Chat**: Discord/Telegram (se disponível)
 
 ### **FAQ Rápido:**
