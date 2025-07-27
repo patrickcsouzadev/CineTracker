@@ -30,6 +30,11 @@
     "from": "node_modules/bindings",
     "to": "app/node_modules/bindings",
     "filter": [ "**/*" ]
+  },
+  {
+    "from": "node_modules/file-uri-to-path",
+    "to": "app/node_modules/file-uri-to-path",
+    "filter": [ "**/*" ]
   }
 ],
     "directories": {
