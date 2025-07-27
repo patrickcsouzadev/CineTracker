@@ -21,14 +21,17 @@
     "productName": "CineTracker",
     "asar": false,
     "extraResources": [
-    {
-      "from": "node_modules/better-sqlite3",
-      "to": "app/node_modules/better-sqlite3",
-      "filter": [
-        "**/*"
-      ]
-    }
-  ],
+  {
+    "from": "node_modules/better-sqlite3",
+    "to": "app/node_modules/better-sqlite3",
+    "filter": [ "**/*" ]
+  },
+  {
+    "from": "node_modules/bindings",
+    "to": "app/node_modules/bindings",
+    "filter": [ "**/*" ]
+  }
+],
     "directories": {
       "output": "dist",
       "buildResources": "assets"
@@ -150,13 +153,13 @@
     }
   },
   "devDependencies": {
-    "electron": "^25.0.0",
-    "electron-builder": "^24.0.0",
+    "electron": "^28.3.0",
+    "electron-builder": "^24.13.3",
     "rimraf": "^5.0.0"
   },
   "dependencies": {
   "axios": "^1.4.0",
-  "better-sqlite3": "^9.4.5",
+  "better-sqlite3": "^11.1.2",
   "path": "^0.12.7"
 },
   "author": "Movie Tracker Team",
