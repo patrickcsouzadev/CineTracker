@@ -20,6 +20,15 @@
     "appId": "com.cinetracker.app",
     "productName": "CineTracker",
     "asar": false,
+    "extraResources": [
+    {
+      "from": "node_modules/better-sqlite3",
+      "to": "app/node_modules/better-sqlite3",
+      "filter": [
+        "**/*"
+      ]
+    }
+  ],
     "directories": {
       "output": "dist",
       "buildResources": "assets"
