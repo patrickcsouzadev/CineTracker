@@ -6,6 +6,7 @@ let selectedPosterPath = null;
 let selectedImdbId = null;
 let currentView = 'grid';
 let omdbApiKey = '';
+let posterBaseUrl = '';
 
 const OMDB_BASE_URL = 'https://www.omdbapi.com/';
 const appApi = window.cineTracker;
@@ -25,9 +26,11 @@ async function loadConfig() {
   try {
     const config = await appApi.getAppConfig();
     omdbApiKey = typeof config?.omdbApiKey === 'string' ? config.omdbApiKey.trim() : '';
+    posterBaseUrl = typeof config?.posterBaseUrl === 'string' ? config.posterBaseUrl : '';
   } catch (error) {
     console.error('Erro ao carregar configuracao:', error);
     omdbApiKey = '';
+    posterBaseUrl = '';
   }
 }
 
@@ -184,11 +187,19 @@ function renderItems() {
     poster.className = 'item-poster';
 
     if (item.poster_path) {
-      const image = document.createElement('img');
-      image.src = buildLocalPosterSrc(item.poster_path);
-      image.alt = String(item.title || 'Poster');
-      image.loading = 'lazy';
-      poster.appendChild(image);
+      const source = buildLocalPosterSrc(item.poster_path);
+      if (source) {
+        const image = document.createElement('img');
+        image.src = source;
+        image.alt = String(item.title || 'Poster');
+        image.loading = 'lazy';
+        poster.appendChild(image);
+      } else {
+        const noImage = document.createElement('div');
+        noImage.className = 'no-image';
+        noImage.textContent = '🎬';
+        poster.appendChild(noImage);
+      }
     } else {
       const noImage = document.createElement('div');
       noImage.className = 'no-image';
@@ -243,7 +254,19 @@ function renderItems() {
 }
 
 function buildLocalPosterSrc(fileName) {
-  return `posters/${encodeURIComponent(String(fileName))}`;
+  if (!fileName || typeof fileName !== 'string') {
+    return null;
+  }
+
+  if (!posterBaseUrl) {
+    return `posters/${encodeURIComponent(fileName)}`;
+  }
+
+  try {
+    return new URL(fileName, posterBaseUrl).toString();
+  } catch {
+    return `posters/${encodeURIComponent(fileName)}`;
+  }
 }
 
 function showAddForm(type) {
@@ -342,7 +365,11 @@ function renderPosterPreview(fileName) {
   wrapper.className = 'poster-preview';
 
   const image = document.createElement('img');
-  image.src = buildLocalPosterSrc(fileName);
+  const source = buildLocalPosterSrc(fileName);
+  if (!source) {
+    return;
+  }
+  image.src = source;
   image.alt = 'Poster selecionado';
 
   wrapper.appendChild(image);

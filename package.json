@@ -20,29 +20,7 @@
     "appId": "com.cinetracker.app",
     "productName": "CineTracker",
     "asar": true,
-    "extraResources": [
-      {
-        "from": "node_modules/better-sqlite3",
-        "to": "app/node_modules/better-sqlite3",
-        "filter": [
-          "**/*"
-        ]
-      },
-      {
-        "from": "node_modules/bindings",
-        "to": "app/node_modules/bindings",
-        "filter": [
-          "**/*"
-        ]
-      },
-      {
-        "from": "node_modules/file-uri-to-path",
-        "to": "app/node_modules/file-uri-to-path",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
+    "extraResources": [],
     "directories": {
       "output": "dist",
       "buildResources": "assets"
@@ -52,6 +30,8 @@
       "!dist/**/*",
       "!node_modules/**/*",
       "node_modules/better-sqlite3/**/*",
+      "node_modules/bindings/**/*",
+      "node_modules/file-uri-to-path/**/*",
       "!data/**/*",
       "!posters/**/*",
       "!*.md",
@@ -72,8 +52,6 @@
           ]
         }
       ],
-      "icon": "assets/icon.ico",
-      "publisherName": "Movie Tracker Team",
       "requestedExecutionLevel": "asInvoker",
       "artifactName": "${productName}-${version}-${arch}-setup.${ext}"
     },
@@ -85,11 +63,7 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Movie & Series Tracker",
-      "uninstallDisplayName": "Movie & Series Tracker",
-      "installerIcon": "assets/icon.ico",
-      "uninstallerIcon": "assets/icon.ico",
-      "installerHeaderIcon": "assets/icon.ico",
-      "include": "assets/installer.nsh"
+      "uninstallDisplayName": "Movie & Series Tracker"
     },
     "mac": {
       "target": [

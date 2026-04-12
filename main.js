@@ -20,6 +20,19 @@ const EXTENSION_TO_TYPE = Object.freeze({
 let mainWindow;
 let db;
 
+function getStorageRoot() {
+  return app.getPath('userData');
+}
+
+function getPostersDir() {
+  return path.join(getStorageRoot(), 'posters');
+}
+
+function getPosterBaseUrl() {
+  // Ensure URL resolution treats filenames as children of posters dir.
+  return pathToFileURL(`${getPostersDir()}${path.sep}`).toString();
+}
+
 function detectImageTypeBySignature(buffer) {
   if (buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) {
     return 'jpeg';
@@ -204,7 +217,7 @@ async function securelyCopySelectedImage(filePath) {
     throw new Error('Assinatura do arquivo nao corresponde a uma imagem valida.');
   }
 
-  const postersDir = path.join(__dirname, 'posters');
+  const postersDir = getPostersDir();
   await fs.promises.mkdir(postersDir, { recursive: true });
 
   const extension = ext === '.jpeg' ? '.jpg' : ext;
@@ -252,7 +265,8 @@ function registerSecureIpcHandlers() {
   };
 
   register('get-app-config', async () => ({
-    omdbApiKey: process.env.OMDB_API_KEY || ''
+    omdbApiKey: process.env.OMDB_API_KEY || '',
+    posterBaseUrl: getPosterBaseUrl()
   }));
 
   register('db-add-movie', async (movieData) => db.addMovie(sanitizeMovieOrSeriesPayload(movieData)));
@@ -290,7 +304,7 @@ function registerSecureIpcHandlers() {
 
 app.whenReady().then(async () => {
   try {
-    db = new AppDatabase();
+    db = new AppDatabase(getStorageRoot());
     db.init();
   } catch (error) {
     console.error('Falha critica ao inicializar o banco de dados:', error);

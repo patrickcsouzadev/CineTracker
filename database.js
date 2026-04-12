@@ -5,8 +5,8 @@ const fs = require('fs');
 const SAFE_POSTER_FILENAME_REGEX = /^[a-zA-Z0-9._-]+$/;
 
 class AppDatabase {
-  constructor() {
-    const dbDir = path.join(__dirname, 'data');
+  constructor(storageRoot = __dirname) {
+    const dbDir = path.join(storageRoot, 'data');
     if (!fs.existsSync(dbDir)) {
       fs.mkdirSync(dbDir, { recursive: true });
     }

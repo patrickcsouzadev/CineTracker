@@ -1,477 +1,212 @@
-# 🎬 GUIA COMPLETO: CineTracker
+﻿# Guia de Instalação e Build - CineTracker
 
-## 🚀 INSTALAÇÃO E BUILD AUTOMATIZADO
+Este guia foi atualizado para o estado atual do projeto (Electron + SQLite + hardening de segurança).
 
-### ⚡ MÉTODO RÁPIDO (Recomendado)
+## 1. Pré-requisitos
 
-```bash
-# 1. Clone/baixe o projeto
-git clone [URL_DO_PROJETO]
-cd movie-series-tracker
+No Windows (recomendado):
 
-# 2. Build automatizado completo
+- Windows 10/11
+- Node.js LTS (recomendado: 20.x ou 22.x)
+- npm (vem com Node.js)
+- Git (opcional, se for clonar)
+
+Verifique as versões:
+
+```powershell
+node -v
+npm -v
+```
+
+## 2. Baixar o projeto
+
+Se for via Git:
+
+```powershell
+git clone <URL_DO_REPOSITORIO>
+cd CineTracker
+```
+
+Se você já tem a pasta local, apenas entre nela:
+
+```powershell
+cd C:\Users\PTK\Documents\PROJETOS\CineTracker
+```
+
+## 3. Instalar dependências
+
+```powershell
 npm install
-npm run build
-
-# 3. Executáveis prontos na pasta dist/
+npm run postinstall
 ```
 
-### 🛠️ MÉTODO DETALHADO
+Observação:
+- `postinstall` recompila dependências nativas para o Electron atual (ex.: `better-sqlite3`).
 
-#### 1️⃣ **Preparação do Ambiente**
+## 4. Configurar chave da OMDb (opcional)
 
-```bash
-# Verificar Node.js (versão 16+)
-node --version
-npm --version
+A busca automática no IMDb/OMDb só funciona com chave.
 
-# Se não tiver, instale em: https://nodejs.org
+Você pode definir a variável de ambiente assim:
+
+```powershell
+setx OMDB_API_KEY "SUA_CHAVE_AQUI"
 ```
 
-#### 2️⃣ **Instalação das Dependências**
+Feche e abra o terminal depois do `setx`.
 
-```bash
-# Instalar todas as dependências
+Sem chave, o app funciona normalmente, apenas sem busca automática.
+
+## 5. Executar em desenvolvimento
+
+```powershell
+npm run dev
+```
+
+## 6. Build para usar sem instalador (recomendado quando o setup falhar)
+
+Gera a pasta `win-unpacked` com o app pronto para executar:
+
+```powershell
+npx electron-builder --win --dir
+```
+
+Executável gerado:
+
+```text
+dist\win-unpacked\CineTracker.exe
+```
+
+Para abrir:
+
+```powershell
+.\dist\win-unpacked\CineTracker.exe
+```
+
+## 7. Build com instalador (.exe setup)
+
+Comando padrão:
+
+```powershell
+npm run build-win
+```
+
+Saída esperada:
+
+```text
+dist\CineTracker-<versao>-x64-setup.exe
+```
+
+## 8. Quando o setup falha com erro de symlink (winCodeSign)
+
+Erro típico:
+
+```text
+Cannot create symbolic link ... winCodeSign ... O cliente não tem o privilégio necessário
+```
+
+Faça nesta ordem:
+
+1. Ative **Modo Desenvolvedor** no Windows:
+   - Configurações -> Privacidade e Segurança -> Para Desenvolvedores -> Modo Desenvolvedor
+2. Abra o PowerShell como Administrador
+3. Limpe cache do electron-builder:
+
+```powershell
+Remove-Item "$env:LOCALAPPDATA\electron-builder\Cache\winCodeSign" -Recurse -Force -ErrorAction SilentlyContinue
+```
+
+4. Rode novamente:
+
+```powershell
+npm run build-win
+```
+
+Se ainda falhar, use o build `win-unpacked` (seção 6), que já gera app executável.
+
+## 9. Instalação da aplicação no PC
+
+### Opção A (com setup)
+
+1. Dê duplo clique em `dist\CineTracker-<versao>-x64-setup.exe`
+2. Siga o assistente do instalador
+3. Abra pelo atalho criado
+
+### Opção B (sem setup)
+
+1. Abra `dist\win-unpacked\CineTracker.exe`
+2. (Opcional) Crie atalho manual para área de trabalho/menu iniciar
+
+## 10. Onde ficam os dados do usuário
+
+Após instalar/executar, os dados NÃO ficam dentro da pasta do projeto.
+
+Pasta base:
+
+```text
+%APPDATA%\CineTracker
+```
+
+Arquivos usados pelo app:
+
+- Banco SQLite: `%APPDATA%\CineTracker\data\movies_series.db`
+- Posters: `%APPDATA%\CineTracker\posters\`
+
+Isso permite atualizar/reinstalar sem perder dados (desde que essa pasta não seja apagada).
+
+## 11. Atualizar o app
+
+1. Atualize o código fonte
+2. Rode:
+
+```powershell
 npm install
-
-# Ou usando yarn
-yarn install
+npm run postinstall
+npm run build-win
 ```
 
-#### 3️⃣ **Configuração dos Ícones**
+3. Instale a nova versão (ou substitua o `win-unpacked`)
 
-```bash
-# Gerar ícones padrão
-npm run setup-icons
+## 12. Troubleshooting rápido
 
-# OU customize manualmente:
-# - Coloque sua imagem em: assets/source-icon.png (512x512px)
-# - Execute: npm run setup-icons
-# - Converta para: icon.ico, icon.icns, icon.png
-```
+### 12.1 "Electron failed to install correctly"
 
-#### 4️⃣ **Build Automatizado**
-
-```bash
-# Build completo para todas as plataformas
-npm run build
-
-# Ou builds específicos:
-npm run build-win    # Windows (.exe)
-npm run build-mac    # macOS (.dmg)
-npm run build-linux  # Linux (.AppImage + .deb)
-```
-
----
-
-## 📦 CUSTOMIZAÇÃO COMPLETA
-
-### 🎨 **Personalizar Ícones**
-
-#### **Método Automático:**
-1. Coloque sua imagem em `assets/source-icon.png` (512x512px)
-2. Execute: `npm run setup-icons`
-3. Ícones gerados automaticamente
-
-#### **Método Manual:**
-```
-assets/
-├── icon.ico     (Windows - multi-tamanho)
-├── icon.icns    (macOS - multi-resolução)
-├── icon.png     (Linux - 512x512px)
-└── icon.svg     (Fonte vetorial)
-```
-
-**Ferramentas Recomendadas:**
-- **Online**: [favicon.io](https://favicon.io), [realfavicongenerator.net](https://realfavicongenerator.net)
-- **Desktop**: GIMP, Photoshop, Inkscape
-- **CLI**: ImageMagick, icon-gen
-
-### 🏷️ **Personalizar Informações do App**
-
-Edite `package.json`:
-
-```json
-{
-  "name": "seu-app-name",
-  "productName": "Seu App Nome",
-  "description": "Sua descrição",
-  "author": "Seu Nome",
-  "version": "1.0.0",
-  "build": {
-    "appId": "com.seudominio.seuapp",
-    "productName": "Seu App Nome",
-    "win": {
-      "publisherName": "Sua Empresa"
-    }
-  }
-}
-```
-
-### 🪟 **Customizar Instalador Windows**
-
-Edite `assets/installer.nsh`:
-- Textos personalizados
-- Páginas do instalador
-- Associações de arquivo
-- Atalhos personalizados
-
-### 🍎 **Customizar Instalador macOS**
-
-Configure no `package.json`:
-```json
-"dmg": {
-  "title": "Seu App 1.0",
-  "background": "assets/dmg-background.png",
-  "icon": "assets/icon.icns"
-}
-```
-
-### 🐧 **Customizar Pacote Linux**
-
-```json
-"linux": {
-  "category": "AudioVideo;Entertainment",
-  "synopsis": "Sua descrição curta",
-  "description": "Descrição completa do app",
-  "maintainer": "seu-email@exemplo.com"
-}
-```
-
----
-
-## 🎯 COMANDOS DISPONÍVEIS
-
-### **Desenvolvimento:**
-```bash
-npm run dev          # Executar em modo desenvolvimento
-npm start            # Executar versão de produção
-```
-
-### **Build:**
-```bash
-npm run build        # Build automatizado completo
-npm run build-win    # Apenas Windows
-npm run build-mac    # Apenas macOS
-npm run build-linux  # Apenas Linux
-npm run build-manual # Build manual (electron-builder)
-```
-
-### **Utilitários:**
-```bash
-npm run setup-icons  # Configurar ícones
-npm run clean        # Limpar pasta dist
-```
-
-### **Scripts Auxiliares:**
-```bash
-# Linux/macOS
-chmod +x build-scripts/build-all.sh
-./build-scripts/build-all.sh
-
-# Windows PowerShell
-.\build-scripts\build-all.ps1
-
-# Make (se disponível)
-make setup    # Configuração inicial
-make build    # Build completo
-make dev      # Desenvolvimento
-make clean    # Limpeza
-```
-
----
-
-## 📁 ESTRUTURA DE ARQUIVOS FINAL
-
-```
-movie-series-tracker/
-├── 📄 main.js                 # Processo principal Electron
-├── 📄 database.js             # Gerenciamento SQLite
-├── 📄 renderer.js             # Interface + IMDb API
-├── 📄 index.html              # Interface principal
-├── 📄 styles.css              # Estilos modernos
-├── 📄 package.json            # Configurações + build
-├── 📄 build.js                # Script de build automatizado
-├── 📄 generate-icons.js        # Gerador de ícones
-├── 📄 README.md               # Documentação
-├── 📄 GUIA-INSTALACAO-COMPLETO.md # Este guia
-├── 📁 assets/                 # Recursos do build
-│   ├── 🖼️ icon.ico            # Ícone Windows
-│   ├── 🖼️ icon.icns           # Ícone macOS
-│   ├── 🖼️ icon.png            # Ícone Linux
-│   ├── 🖼️ icon.svg            # Ícone vetorial
-│   └── 📄 installer.nsh       # Script instalador Windows
-├── 📁 build-scripts/          # Scripts auxiliares
-│   ├── 📄 build-all.sh        # Build completo (Linux/Mac)
-│   ├── 📄 build-all.ps1       # Build completo (Windows)
-│   ├── 📄 dev-setup.sh        # Setup desenvolvimento
-│   ├── 📄 test-build.sh       # Teste builds
-│   └── 📄 Makefile            # Automação Make
-├── 📁 data/                   # Banco de dados SQLite
-│   └── 📄 movies_series.db    # Banco principal
-├── 📁 posters/                # Imagens de pôsteres
-│   └── 🖼️ *.jpg, *.png        # Pôsteres dos filmes/séries
-├── 📁 dist/                   # Executáveis gerados
-│   ├── 📦 Movie-&-Series-Tracker-1.0.0-x64-setup.exe  # Windows
-│   ├── 📦 Movie-&-Series-Tracker-1.0.0-x64.dmg        # macOS
-│   ├── 📦 Movie-&-Series-Tracker-1.0.0-x64.AppImage   # Linux
-│   └── 📦 Movie-&-Series-Tracker-1.0.0-x64.deb        # Debian
-└── 📁 node_modules/           # Dependências (auto-gerado)
-```
-
----
-
-## 🎉 DISTRIBUIÇÃO FINAL
-
-### **Para Usuários Finais:**
-
-#### **Windows:**
-1. Arquivo: `Movie-&-Series-Tracker-1.0.0-x64-setup.exe`
-2. Usuário clica duas vezes
-3. Instalador guiado em português
-4. Ícone criado na área de trabalho
-5. Menu Iniciar populado
-
-#### **macOS:**
-1. Arquivo: `Movie-&-Series-Tracker-1.0.0-x64.dmg`
-2. Usuário clica duas vezes
-3. Arrasta app para pasta Applications
-4. Abre pelo Launchpad
-
-#### **Linux:**
-1. **AppImage**: `Movie-&-Series-Tracker-1.0.0-x64.AppImage`
-   - Torna executável: `chmod +x *.AppImage`
-   - Executa diretamente: `./Movie-&-Series-Tracker-1.0.0-x64.AppImage`
-
-2. **Debian/Ubuntu**: `Movie-&-Series-Tracker-1.0.0-x64.deb`
-   - Instala: `sudo dpkg -i *.deb`
-   - Ou clica duas vezes no gerenciador de pacotes
-
----
-
-## 🔧 SOLUÇÃO DE PROBLEMAS
-
-### **Build Falha:**
-```bash
-# Limpar e reinstalar
-npm run clean
-rm -rf node_modules
+```powershell
+Remove-Item node_modules -Recurse -Force
+Remove-Item package-lock.json -Force
 npm install
-npm run build
+node node_modules/electron/install.js
+npm run postinstall
 ```
 
-### **Ícones Não Aparecem:**
-```bash
-# Verificar se ícones existem
-ls -la assets/
-# Se não, gerar novamente
-npm run setup-icons
+### 12.2 Erro de rebuild do `better-sqlite3`
+
+Se aparecer erro de compilação nativa, use Node LTS (20/22) e rode novamente:
+
+```powershell
+npm run postinstall
 ```
 
-### **Erro de Permissão (Linux/macOS):**
-```bash
-# Dar permissão aos scripts
-chmod +x build-scripts/*.sh
-chmod +x generate-icons.js
-chmod +x build.js
+### 12.3 O executável abre e fecha
+
+Teste com logs:
+
+```powershell
+.\dist\win-unpacked\CineTracker.exe --enable-logging --v=1
 ```
 
-### **Erro SQLite:**
-```bash
-# Recompilar SQLite
-npm rebuild sqlite3
-# Ou reinstalar
-npm uninstall sqlite3
-npm install sqlite3
-```
+Se precisar, redirecione logs para arquivo e analise o erro principal.
 
-### **API IMDb Não Funciona:**
-1. Obtenha chave gratuita em: [omdbapi.com](http://www.omdbapi.com/apikey.aspx)
-2. Edite `renderer.js` linha 12:
-```javascript
-const OMDB_API_KEY = 'sua_chave_aqui';
+## 13. Comandos mais usados
+
+```powershell
+npm run dev
+npm run build-win
+npx electron-builder --win --dir
+npm run postinstall
+npm audit
 ```
 
 ---
 
-## 🎯 CHECKLIST FINAL
-
-### **Antes do Build:**
-- [ ] Node.js 16+ instalado
-- [ ] Dependências instaladas (`npm install`)
-- [ ] Ícones configurados (pasta `assets/`)
-- [ ] Informações do app personalizadas (`package.json`)
-- [ ] API IMDb configurada (opcional)
-
-### **Build Completo:**
-- [ ] `npm run build` executado com sucesso
-- [ ] Pasta `dist/` criada
-- [ ] Executáveis gerados para plataformas desejadas
-- [ ] Tamanhos dos arquivos razoáveis (< 200MB)
-
-### **Teste dos Executáveis:**
-- [ ] Windows: `.exe` instala e executa corretamente
-- [ ] macOS: `.dmg` monta e app funciona
-- [ ] Linux: `.AppImage` executa, `.deb` instala
-
-### **Distribuição:**
-- [ ] Arquivos copiados para local de distribuição
-- [ ] Documentação incluída
-- [ ] Versões testadas em máquinas limpas
-
----
-
-## 🌟 RECURSOS AVANÇADOS
-
-### **🔄 Atualização Automática**
-
-Para adicionar atualizações automáticas, configure:
-
-```json
-// package.json
-"build": {
-  "publish": {
-    "provider": "github",
-    "owner": "seu-usuario",
-    "repo": "movie-tracker"
-  }
-}
-```
-
-### **📊 Analytics (Opcional)**
-
-Para rastrear uso (respeitando privacidade):
-
-```javascript
-// renderer.js - adicionar no final
-const analytics = {
-  trackEvent: (event, data) => {
-    // Implementar apenas métricas anônimas
-    console.log('Event:', event, data);
-  }
-};
-```
-
-### **🌐 Múltiplos Idiomas**
-
-Estrutura para i18n:
-
-```
-locales/
-├── pt-BR.json
-├── en-US.json
-└── es-ES.json
-```
-
-### **🎨 Temas Personalizados**
-
-Configure em `styles.css`:
-
-```css
-/* Tema escuro */
-[data-theme="dark"] {
-  --background: #1a1a1a;
-  --surface: #2d2d2d;
-  --text-primary: #ffffff;
-}
-
-/* Tema claro */
-[data-theme="light"] {
-  --background: #f8fafc;
-  --surface: #ffffff;
-  --text-primary: #1e293b;
-}
-```
-
----
-
-## 📈 PRÓXIMOS PASSOS
-
-### **Desenvolvimento Contínuo:**
-1. **Feedback dos Usuários**: Colete sugestões e bugs
-2. **Novas Funcionalidades**: Implemente baseado no uso
-3. **Performance**: Otimize consultas e interface
-4. **Segurança**: Mantenha dependências atualizadas
-
-### **Distribuição Profissional:**
-1. **Website**: Crie landing page para downloads
-2. **Documentação**: Wiki com tutoriais detalhados
-3. **Suporte**: Canal para dúvidas e problemas
-4. **Versionamento**: Releases organizados no GitHub
-
-### **Monetização (Se Aplicável):**
-1. **Versão Pro**: Recursos avançados pagos
-2. **API Premium**: Integrações extras
-3. **Suporte Premium**: Atendimento prioritário
-4. **Customização**: Versões corporativas
-
----
-
-## 🤝 CONTRIBUIÇÃO
-
-### **Como Contribuir:**
-1. Fork do repositório
-2. Crie branch para feature: `git checkout -b nova-feature`
-3. Commit mudanças: `git commit -m 'Adiciona nova feature'`
-4. Push para branch: `git push origin nova-feature`
-5. Abra Pull Request
-
-### **Padrões de Código:**
-- JavaScript ES6+
-- Comentários em português/inglês
-- Testes para novas funcionalidades
-- Documentação atualizada
-
----
-
-## 📞 SUPORTE
-
-### **Canais de Suporte:**
-- 🐛 **Bugs**: Abra issue no GitHub
-- 💡 **Sugestões**: Discussions no repositório  
-- 📧 **Contato**: patrickcsouza.dev@outlook.com
-- 💬 **Chat**: Discord/Telegram (se disponível)
-
-### **FAQ Rápido:**
-
-**P: O app funciona offline?**  
-R: Sim, apenas a busca IMDb precisa de internet.
-
-**P: Posso importar dados de outros apps?**  
-R: Planejado para próximas versões.
-
-**P: Há limite de filmes/séries?**  
-R: Não, limitado apenas pelo espaço em disco.
-
-**P: Funciona em tablets/celulares?**  
-R: Apenas desktop por enquanto.
-
----
-
-## 🎬 CONCLUSÃO
-
-Você agora tem um **software desktop completo e profissional** para registrar filmes e séries! 
-
-### **O que você conseguiu:**
-✅ **App multiplataforma** (Windows, macOS, Linux)  
-✅ **Interface moderna** e responsiva  
-✅ **Integração IMDb** real  
-✅ **Sistema de instaladores** customizados  
-✅ **Build automatizado** completo  
-✅ **Documentação profissional**
-
-### **Comandos para começar AGORA:**
-```bash
-git clone [seu-repositorio]
-cd movie-series-tracker
-npm install
-npm run build
-```
-
-**🚀 Seus executáveis estarão prontos na pasta `dist/`!**
-
----
-
-*Desenvolvido com ❤️ para cinéfilos e seriados!* 🎬🍿
-
-**#MovieTracker #Desktop #Electron #Multiplataforma #Cinema #Series**
+Se você quiser, eu também posso criar um guia separado de "Distribuição para usuários" (instalador, assinatura de código e checklist de release).
