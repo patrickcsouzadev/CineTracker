@@ -19,38 +19,45 @@
   "build": {
     "appId": "com.cinetracker.app",
     "productName": "CineTracker",
-    "asar": false,
+    "asar": true,
     "extraResources": [
-  {
-    "from": "node_modules/better-sqlite3",
-    "to": "app/node_modules/better-sqlite3",
-    "filter": [ "**/*" ]
-  },
-  {
-    "from": "node_modules/bindings",
-    "to": "app/node_modules/bindings",
-    "filter": [ "**/*" ]
-  },
-  {
-    "from": "node_modules/file-uri-to-path",
-    "to": "app/node_modules/file-uri-to-path",
-    "filter": [ "**/*" ]
-  }
-],
+      {
+        "from": "node_modules/better-sqlite3",
+        "to": "app/node_modules/better-sqlite3",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "node_modules/bindings",
+        "to": "app/node_modules/bindings",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "node_modules/file-uri-to-path",
+        "to": "app/node_modules/file-uri-to-path",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "directories": {
       "output": "dist",
       "buildResources": "assets"
     },
     "files": [
-  "**/*",
-  "!dist/**/*",
-  "!node_modules/**/*",
-  "node_modules/axios/**/*",
-  "node_modules/better-sqlite3/**/*",
-  "!*.md",
-  "!build.js",
-  "!generate-icons.js"
-],
+      "**/*",
+      "!dist/**/*",
+      "!node_modules/**/*",
+      "node_modules/better-sqlite3/**/*",
+      "!data/**/*",
+      "!posters/**/*",
+      "!*.md",
+      "!build.js",
+      "!generate-icons.js"
+    ],
     "extraMetadata": {
       "name": "cine-tracker",
       "productName": "CineTracker"
@@ -59,7 +66,10 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         }
       ],
       "icon": "assets/icon.ico",
@@ -85,7 +95,10 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "icon": "assets/icon.icns",
@@ -119,11 +132,15 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "assets/icon.png",
@@ -158,15 +175,13 @@
     }
   },
   "devDependencies": {
-    "electron": "^28.3.0",
-    "electron-builder": "^24.13.3",
+    "electron": "^41.2.0",
+    "electron-builder": "^26.8.1",
     "rimraf": "^5.0.0"
   },
   "dependencies": {
-  "axios": "^1.4.0",
-  "better-sqlite3": "^11.1.2",
-  "path": "^0.12.7"
-},
+    "better-sqlite3": "^12.8.0"
+  },
   "author": "Movie Tracker Team",
   "license": "MIT"
 }

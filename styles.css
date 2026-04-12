@@ -261,7 +261,7 @@ body {
 
 .modal-content h2 {
     padding: 1.5rem;
-    border-bottom: 1p solid var(--border);
+    border-bottom: 1px solid var(--border);
     margin: 0;
 }
 
@@ -508,11 +508,14 @@ body {
     display: flex;
     align-items: center;
     gap: 1rem;
+    width: 100%;
     padding: 0.75rem;
     border: 1px solid var(--border);
     border-radius: 0.5rem;
     cursor: pointer;
     transition: background-color 0.2s;
+    text-align: left;
+    background: var(--surface);
 }
 
 .search-result-item:hover {
@@ -608,4 +611,8 @@ body {
 
 .items-list .item-actions {
     padding-top: 0.5rem;
+}
+
+.hidden {
+    display: none !important;
 }

@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src https://www.omdbapi.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
     <title>CineTracker</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -11,37 +12,37 @@
         <header class="header">
             <h1>🎬 CineTracker</h1>
             <div class="header-actions">
-                <button class="btn btn-primary" onclick="showAddForm('movie')">+ Adicionar Filme</button>
-                <button class="btn btn-primary" onclick="showAddForm('series')">+ Adicionar Série</button>
+                <button id="addMovieBtn" class="btn btn-primary" type="button">+ Adicionar Filme</button>
+                <button id="addSeriesBtn" class="btn btn-primary" type="button">+ Adicionar Série</button>
             </div>
         </header>
 
         <div class="filters-container">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Buscar por título..." oninput="filterItems()">
+                <input type="text" id="searchInput" placeholder="Buscar por título..." autocomplete="off">
             </div>
             <div class="filters">
                 <div class="view-toggle">
-    <button id="btn-grid" class="btn-view active" onclick="setView('grid')" title="Visualização em Grade">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3"width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-    </button>
-    <button id="btn-list" class="btn-view" onclick="setView('list')" title="Visualização em Lista">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-    </button>
-            </div>
-                <select id="typeFilter" onchange="filterItems()">
+                    <button id="btn-grid" class="btn-view active" type="button" title="Visualização em Grade" aria-label="Visualização em grade">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    </button>
+                    <button id="btn-list" class="btn-view" type="button" title="Visualização em Lista" aria-label="Visualização em lista">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                    </button>
+                </div>
+                <select id="typeFilter">
                     <option value="all">Todos</option>
                     <option value="movies">Filmes</option>
                     <option value="series">Séries</option>
                 </select>
-                <select id="ratingFilter" onchange="filterItems()">
+                <select id="ratingFilter">
                     <option value="all">Todas as notas</option>
                     <option value="0-3">0-3</option>
                     <option value="4-6">4-6</option>
                     <option value="7-8">7-8</option>
                     <option value="9-10">9-10</option>
                 </select>
-                <select id="sortBy" onchange="filterItems()">
+                <select id="sortBy">
                     <option value="date">Data de adição</option>
                     <option value="title">Título</option>
                     <option value="rating">Nota pessoal</option>
@@ -53,25 +54,25 @@
             <div id="itemsList" class="items-grid"></div>
         </main>
 
-        <div id="modal" class="modal">
+        <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
             <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
+                <span id="closeModalBtn" class="close" role="button" tabindex="0" aria-label="Fechar">&times;</span>
                 <h2 id="modalTitle">Adicionar Item</h2>
-                <form id="itemForm">
+                <form id="itemForm" novalidate>
                     <input type="hidden" id="itemId">
                     <input type="hidden" id="itemType">
-                    
+
                     <div class="form-group">
                         <label for="title">Título:</label>
                         <div class="title-input-group">
-                            <input type="text" id="title" required>
-                            <button type="button" class="btn btn-secondary" onclick="searchIMDb()">Buscar IMDb</button>
+                            <input type="text" id="title" required maxlength="200">
+                            <button id="searchImdbBtn" type="button" class="btn btn-secondary">Buscar IMDb</button>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="synopsis">Sinopse:</label>
-                        <textarea id="synopsis" rows="4"></textarea>
+                        <textarea id="synopsis" rows="4" maxlength="4000"></textarea>
                     </div>
 
                     <div class="form-group">
@@ -85,37 +86,36 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="poster">Pôster:</label>
+                        <label for="posterPreview">Pôster:</label>
                         <div class="poster-upload">
-                            <button type="button" class="btn btn-secondary" onclick="selectPoster()">Selecionar Imagem</button>
+                            <button id="selectPosterBtn" type="button" class="btn btn-secondary">Selecionar Imagem</button>
                             <div id="posterPreview"></div>
                         </div>
                     </div>
 
-                    <div id="seasonsSection" class="seasons-section" style="display: none;">
+                    <div id="seasonsSection" class="seasons-section hidden">
                         <h3>Temporadas</h3>
                         <div id="seasonsList"></div>
-                        <button type="button" class="btn btn-secondary" onclick="addSeason()">+ Nova Temporada</button>
+                        <button id="addSeasonBtn" type="button" class="btn btn-secondary">+ Nova Temporada</button>
                     </div>
 
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">Salvar</button>
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                        <button id="cancelModalBtn" type="button" class="btn btn-secondary">Cancelar</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div id="searchResultsModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeSearchResultsModal()">&times;</span>
-        <h2>Resultados da Busca</h2>
-        <div id="searchResultsList" class="search-results-container">
-            </div>
+    <div id="searchResultsModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-content">
+            <span id="closeSearchResultsBtn" class="close" role="button" tabindex="0" aria-label="Fechar resultados">&times;</span>
+            <h2>Resultados da Busca</h2>
+            <div id="searchResultsList" class="search-results-container"></div>
+        </div>
     </div>
-</div>
 
-<script src="renderer.js"></script>
+    <script src="renderer.js"></script>
 </body>
 </html>

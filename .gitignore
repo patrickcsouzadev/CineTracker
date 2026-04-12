@@ -1,5 +1,9 @@
-posters/
 node_modules/
 dist/
-data/
-assets/
+data/*
+!data/.gitkeep
+posters/*
+!posters/.gitkeep
+.env
+.env.*
+!.env.example

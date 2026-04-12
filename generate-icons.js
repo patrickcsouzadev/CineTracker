@@ -171,8 +171,7 @@ function generateBuildConfig() {
             "**/*",
             "!dist/**/*",
             "!node_modules/**/*",
-            "node_modules/sqlite3/**/*",
-            "node_modules/axios/**/*"
+            "node_modules/better-sqlite3/**/*"
         ],
         win: {
             target: "nsis",
