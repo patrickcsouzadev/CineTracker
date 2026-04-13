@@ -8,95 +8,305 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="app-scene" aria-hidden="true">
+        <div class="scene-orb orb-one"></div>
+        <div class="scene-orb orb-two"></div>
+        <div class="scene-stripe"></div>
+    </div>
+
     <div class="app-container">
         <header class="header">
-            <h1>🎬 CineTracker</h1>
-            <div class="header-actions">
-                <button id="addMovieBtn" class="btn btn-primary" type="button">+ Adicionar Filme</button>
-                <button id="addSeriesBtn" class="btn btn-primary" type="button">+ Adicionar Série</button>
+            <div class="brand-cluster">
+                <p class="brand-kicker">Caderno audiovisual</p>
+                <h1>CineTracker</h1>
+                <p class="brand-subtitle">Controle watchlist, episódios e histórico com inteligência.</p>
+            </div>
+
+            <div class="header-side">
+                <div class="header-actions">
+                    <button id="addMovieBtn" class="btn btn-primary" type="button">
+                        <span class="btn-glyph" aria-hidden="true">+</span>
+                        Novo Filme
+                    </button>
+                    <button id="addSeriesBtn" class="btn btn-secondary" type="button">
+                        <span class="btn-glyph" aria-hidden="true">#</span>
+                        Nova Série
+                    </button>
+                </div>
+
+                <div class="header-actions utility-actions">
+                    <button id="exportDataBtn" class="btn btn-secondary" type="button">Exportar</button>
+                    <button id="importDataBtn" class="btn btn-secondary" type="button">Importar</button>
+                    <button id="backupBtn" class="btn btn-secondary" type="button">Backup</button>
+                    <button id="restoreBtn" class="btn btn-secondary" type="button">Restaurar</button>
+                </div>
             </div>
         </header>
 
+        <section class="insights-panel" aria-label="Resumo da coleção">
+            <article class="insight-card insight-featured">
+                <p class="insight-label">Acervo total</p>
+                <p id="statTotal" class="insight-value">0</p>
+                <p id="statFilteredInfo" class="insight-note">0 itens em foco agora</p>
+            </article>
+
+            <article class="insight-card insight-small insight-movies">
+                <p class="insight-label">Filmes</p>
+                <p id="statMovies" class="insight-value">0</p>
+            </article>
+
+            <article class="insight-card insight-small insight-series">
+                <p class="insight-label">Séries</p>
+                <p id="statSeries" class="insight-value">0</p>
+            </article>
+
+            <article class="insight-card insight-small insight-user-rating">
+                <p class="insight-label">Média pessoal</p>
+                <p id="statUserAverage" class="insight-value">--</p>
+            </article>
+
+            <article class="insight-card insight-small insight-imdb-rating">
+                <p class="insight-label">Média IMDb</p>
+                <p id="statImdbAverage" class="insight-value">--</p>
+            </article>
+
+            <article class="insight-card insight-small">
+                <p class="insight-label">Watchlist</p>
+                <p id="statWatchlist" class="insight-value">0</p>
+            </article>
+
+            <article class="insight-card insight-small">
+                <p class="insight-label">Concluídos</p>
+                <p id="statCompleted" class="insight-value">0</p>
+            </article>
+
+            <article class="insight-card insight-small">
+                <p class="insight-label">Episódios vistos</p>
+                <p id="statEpisodes" class="insight-value">0</p>
+            </article>
+        </section>
+
+        <div class="quick-tabs" role="tablist" aria-label="Visão da biblioteca">
+            <button id="tab-all" class="tab-btn active" data-library="all" type="button" role="tab" aria-selected="true">Tudo</button>
+            <button id="tab-library" class="tab-btn" data-library="library" type="button" role="tab" aria-selected="false">Biblioteca</button>
+            <button id="tab-watchlist" class="tab-btn" data-library="watchlist" type="button" role="tab" aria-selected="false">Watchlist</button>
+        </div>
+
+        <div id="bulkBar" class="bulk-bar hidden" aria-live="polite">
+            <span id="bulkCount">0 selecionados</span>
+            <select id="bulkStatusSelect">
+                <option value="watchlist">Watchlist</option>
+                <option value="watching">Assistindo</option>
+                <option value="completed">Concluído</option>
+                <option value="paused">Pausado</option>
+                <option value="dropped">Dropado</option>
+                <option value="rewatch">Reassistir</option>
+            </select>
+            <button id="bulkApplyStatusBtn" class="btn btn-secondary" type="button">Aplicar status</button>
+            <button id="bulkDeleteBtn" class="btn btn-danger" type="button">Excluir selecionados</button>
+            <button id="bulkClearBtn" class="btn btn-secondary" type="button">Limpar seleção</button>
+        </div>
+
         <div class="filters-container">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Buscar por título..." autocomplete="off">
+                <label class="sr-only" for="searchInput">Buscar por título</label>
+                <input type="text" id="searchInput" placeholder="Buscar por título, gênero, tag, coleção..." autocomplete="off">
             </div>
+
             <div class="filters">
-                <div class="view-toggle">
+                <div class="view-toggle" role="group" aria-label="Alternar visualização">
                     <button id="btn-grid" class="btn-view active" type="button" title="Visualização em Grade" aria-label="Visualização em grade">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        <span class="view-icon view-icon-grid" aria-hidden="true"></span>
+                        <span class="btn-view-text">Grade</span>
                     </button>
                     <button id="btn-list" class="btn-view" type="button" title="Visualização em Lista" aria-label="Visualização em lista">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                        <span class="view-icon view-icon-list" aria-hidden="true"></span>
+                        <span class="btn-view-text">Lista</span>
                     </button>
                 </div>
-                <select id="typeFilter">
-                    <option value="all">Todos</option>
-                    <option value="movies">Filmes</option>
-                    <option value="series">Séries</option>
-                </select>
-                <select id="ratingFilter">
-                    <option value="all">Todas as notas</option>
-                    <option value="0-3">0-3</option>
-                    <option value="4-6">4-6</option>
-                    <option value="7-8">7-8</option>
-                    <option value="9-10">9-10</option>
-                </select>
-                <select id="sortBy">
-                    <option value="date">Data de adição</option>
-                    <option value="title">Título</option>
-                    <option value="rating">Nota pessoal</option>
-                </select>
+
+                <div class="select-block">
+                    <label for="typeFilter">Tipo</label>
+                    <select id="typeFilter">
+                        <option value="all">Todos</option>
+                        <option value="movies">Filmes</option>
+                        <option value="series">Séries</option>
+                    </select>
+                </div>
+
+                <div class="select-block">
+                    <label for="statusFilter">Status</label>
+                    <select id="statusFilter">
+                        <option value="all">Todos</option>
+                        <option value="watchlist">Watchlist</option>
+                        <option value="watching">Assistindo</option>
+                        <option value="completed">Concluído</option>
+                        <option value="paused">Pausado</option>
+                        <option value="dropped">Dropado</option>
+                        <option value="rewatch">Reassistir</option>
+                    </select>
+                </div>
+
+                <div class="select-block">
+                    <label for="ratingFilter">Nota</label>
+                    <select id="ratingFilter">
+                        <option value="all">Todas as notas</option>
+                        <option value="0-3">0-3</option>
+                        <option value="4-6">4-6</option>
+                        <option value="7-8">7-8</option>
+                        <option value="9-10">9-10</option>
+                    </select>
+                </div>
+
+                <div class="select-block">
+                    <label for="yearFilter">Ano</label>
+                    <select id="yearFilter">
+                        <option value="all">Todos</option>
+                    </select>
+                </div>
+
+                <div class="select-block">
+                    <label for="genreFilter">Gênero</label>
+                    <input id="genreFilter" type="text" placeholder="Ex: Drama">
+                </div>
+
+                <div class="select-block">
+                    <label for="sortBy">Ordenar</label>
+                    <select id="sortBy">
+                        <option value="date">Data de adição</option>
+                        <option value="title">Título</option>
+                        <option value="rating">Nota pessoal</option>
+                        <option value="imdb">Nota IMDb</option>
+                        <option value="year">Ano</option>
+                        <option value="last_watched">Último assistido</option>
+                    </select>
+                </div>
             </div>
         </div>
 
         <main class="main-content">
-            <div id="itemsList" class="items-grid"></div>
+            <div class="content-head">
+                <h2>Sua coleção</h2>
+                <p id="resultsCounter">0 itens em exibição</p>
+            </div>
+            <div id="itemsList" class="items-grid" aria-live="polite"></div>
         </main>
+
+        <section class="recommendations-panel" aria-label="Recomendações">
+            <div class="content-head">
+                <h2>Recomendações</h2>
+                <p id="recommendationHint">Com base no seu histórico</p>
+            </div>
+            <div id="recommendationsList" class="recommendations-list"></div>
+        </section>
 
         <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
             <div class="modal-content">
-                <span id="closeModalBtn" class="close" role="button" tabindex="0" aria-label="Fechar">&times;</span>
+                <button id="closeModalBtn" class="close" type="button" aria-label="Fechar">&times;</button>
                 <h2 id="modalTitle">Adicionar Item</h2>
                 <form id="itemForm" novalidate>
                     <input type="hidden" id="itemId">
                     <input type="hidden" id="itemType">
 
                     <div class="form-group">
-                        <label for="title">Título:</label>
+                        <label for="title">Título</label>
                         <div class="title-input-group">
                             <input type="text" id="title" required maxlength="200">
                             <button id="searchImdbBtn" type="button" class="btn btn-secondary">Buscar IMDb</button>
                         </div>
                     </div>
 
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="year">Ano</label>
+                            <input type="number" id="year" min="1888" max="2100" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select id="status">
+                                <option value="watchlist">Watchlist</option>
+                                <option value="watching">Assistindo</option>
+                                <option value="completed">Concluído</option>
+                                <option value="paused">Pausado</option>
+                                <option value="dropped">Dropado</option>
+                                <option value="rewatch">Reassistir</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="genre">Gênero(s)</label>
+                            <input type="text" id="genre" maxlength="500" placeholder="Ex: Drama, Ficção">
+                        </div>
+                        <div class="form-group">
+                            <label for="runtime">Duração</label>
+                            <input type="text" id="runtime" maxlength="100" placeholder="Ex: 142 min">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="director">Diretor</label>
+                            <input type="text" id="director" maxlength="300">
+                        </div>
+                        <div class="form-group">
+                            <label for="actors">Elenco</label>
+                            <input type="text" id="actors" maxlength="500">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="tags">Tags (separadas por vírgula)</label>
+                            <input type="text" id="tags" maxlength="1000" placeholder="Ex: clássico, oscar">
+                        </div>
+                        <div class="form-group">
+                            <label for="collections">Coleções (separadas por vírgula)</label>
+                            <input type="text" id="collections" maxlength="1000" placeholder="Ex: Top 2026, Noite de terror">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="lastWatchedAt">Último assistido em</label>
+                            <input type="datetime-local" id="lastWatchedAt">
+                        </div>
+                        <div class="form-group">
+                            <label for="reminderAt">Lembrete</label>
+                            <input type="datetime-local" id="reminderAt">
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label for="synopsis">Sinopse:</label>
+                        <label for="synopsis">Sinopse</label>
                         <textarea id="synopsis" rows="4" maxlength="4000"></textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label for="userRating">Sua Nota (0-10):</label>
-                        <input type="number" id="userRating" min="0" max="10" step="0.1">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="userRating">Sua nota (0-10)</label>
+                            <input type="number" id="userRating" min="0" max="10" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Nota IMDb</label>
+                            <span id="imdbRating" class="imdb-rating">--</span>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Nota IMDb:</label>
-                        <span id="imdbRating" class="imdb-rating">--</span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="posterPreview">Pôster:</label>
+                        <label for="posterPreview">Pôster</label>
                         <div class="poster-upload">
-                            <button id="selectPosterBtn" type="button" class="btn btn-secondary">Selecionar Imagem</button>
+                            <button id="selectPosterBtn" type="button" class="btn btn-secondary">Selecionar imagem</button>
                             <div id="posterPreview"></div>
                         </div>
                     </div>
 
                     <div id="seasonsSection" class="seasons-section hidden">
-                        <h3>Temporadas</h3>
+                        <h3>Temporadas e episódios</h3>
+                        <p class="section-tip">Gerencie temporadas, episódios e progresso detalhado.</p>
                         <div id="seasonsList"></div>
-                        <button id="addSeasonBtn" type="button" class="btn btn-secondary">+ Nova Temporada</button>
+                        <button id="addSeasonBtn" type="button" class="btn btn-secondary">+ Nova temporada</button>
                     </div>
 
                     <div class="form-actions">
@@ -110,10 +320,17 @@
 
     <div id="searchResultsModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
         <div class="modal-content">
-            <span id="closeSearchResultsBtn" class="close" role="button" tabindex="0" aria-label="Fechar resultados">&times;</span>
+            <button id="closeSearchResultsBtn" class="close" type="button" aria-label="Fechar resultados">&times;</button>
             <h2>Resultados da Busca</h2>
             <div id="searchResultsList" class="search-results-container"></div>
         </div>
+    </div>
+
+    <div id="toastStack" class="toast-stack" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="undoBar" class="undo-bar hidden">
+        <span id="undoText">Item excluído</span>
+        <button id="undoDeleteBtn" class="btn btn-secondary" type="button">Desfazer</button>
     </div>
 
     <script src="renderer.js"></script>
